@@ -1,0 +1,32 @@
+Tools - 
+- Aircrack - https://www.aircrack-ng.org/doku.php?id=airodump-ng
+
+
+Articles / Research
+- Behind The Wings: The Case of Reverse Engineering and Drone Hijacking in DJI Enhanced Wi-Fi Protocol - https://ieeexplore.ieee.org/document/10830741
+- A Systematic Approach for Threat and Vulnerability Analysis of Unmanned Aerial Vehicles - https://doi.org/10.1016/j.iot.2024.101180
+- Threat Analysis and Assessment Based on a Collaboration Interface for Manned-Unmanned Teaming Systems - https://www.techscience.com/cmc/v88n1/67305
+- MAVSec: Securing the MAVLink Protocol for Ardupilot/PX4 Unmanned Aerial Systems - https://doi.org/10.48550/arXiv.1905.00265
+- A Novel Cipher for Enhancing MAVLink Security: Design, Security Analysis, and Performance Evaluation Using a Drone Testbed - https://doi.org/10.48550/arXiv.2504.20626
+- Design and Performance Evaluation of Secure RF and WiFi-Based Communication in Drone Swarms via Testbed Implementation - https://doi.org/10.48550/arXiv.2606.27028
+- Design and development of an SDR-based system for real-time detection and characterization of drone RF signatures - https://doi.org/10.1038/s41598-026-48925-1
+- RF/WiFi-based UAV surveillance systems: A systematic literature review - https://doi.org/10.1016/j.iot.2024.101201
+- An investigation into Unmanned Aerial System (UAS) forensics: Data extraction & analysis - https://doi.org/10.1016/j.fsidi.2022.301379
+- Mission-preserving protocol defense: An in-situ MAVLink honeypot with benchmark-calibrated thresholds and constant-space logging - https://doi.org/10.1016/j.comcom.2026.108613
+- Timestamp Manipulation-Based GPS Spoofing Attacks on the MAVLink 2.0 Protocol for UAV Communication: An Empirical Study - https://doi.org/10.1109/TCOMM.2025.3644474
+- Evaluation and telemetry-based detection of GPS spoofing effects on UAV navigation using software-defined radio - https://doi.org/10.1038/s41598-026-53481-9
+- A Security Assessment for Consumer WiFi Drones - https://par.nsf.gov/servlets/purl/10157750
+- Drone Hacking with Raspberry-Pi 3 and WiFi Pineapple: Security and Privacy Threats for the Internet-of-Things - https://ueaeprints.uea.ac.uk/id/eprint/83147/1/Accepted_manuscript.pdf
+- Security Analysis of a Low-Cost Drone - https://dspace.ut.ee/server/api/core/bitstreams/22f3fe08-b3f2-4051-a2df-c83fcb621126/content
+- UAVs Path Deviation Attacks: Survey and Research Challenges - https://ieeexplore.ieee.org/document/9149780
+
+- Samy Kamkar's SkyJack project - https://github.com/samyk/skyjack
+
+
+Videos / Media
+- How to hack someones drone!? - https://youtu.be/7w1VaPqwL64?si=agcW0laU1zfUw5hN
+
+
+Contacts - 
+- Partnership opportunity / tech-related feedback - innovation@cvgairport.com.- https://www.cvgairport.com/on-the-horizon/say-hello-to-cvg-ai-cvg-airport-innovation/
+- Angel Aerial Systems - Kaden has business contact, may be interested in a more complete product
