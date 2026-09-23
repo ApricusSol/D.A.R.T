@@ -1,1 +1,50 @@
 #Enter Names, Authors, summaries, or links related to research articles
+
+
+1. Behind The Wings: The Case of Reverse Engineering and Drone Hijacking in DJI Enhanced Wi-Fi Protocol — D. Pratma, at al. - August 2024
+		a. Summary: The paper investigates security weaknesses in the Enhanced Wi-Fi protocol used for drone control. Researchers reverse-engineered the protocol’s control commands and found vulnerabilities that could allow an attacker to hijack a drone’s communications and alter its flight path. They demonstrated the attack on a DJI Mini SE, showing that even inexpensive, commercially available Wi-Fi routers could be used to intercept and manipulate control commands. The research highlights the need for stronger UAV communication security, particularly as civilian drones are increasingly used in both civilian and military contexts.
+		b. DOI Link: https://doi.org/10.1109/PlatCon63925.2024.10830741
+	
+2. A Systematic Approach for Threat and Vulnerability Analysis of Unmanned Aerial Vehicles - m. Ficc0, et al - April 2024
+		a. Summary: Uses threat modeling and penetration testing against MAVLink on an actual UAV, including the discovery and exploitation of previously unidentified vulnerabilities.
+		b. DOI Link: https://doi.org/10.1016/j.iot.2024.101180
+	
+3. Threat Analysis and Assessment Based on a Collaboration Interface for Manned-Unmanned Teaming Systems - Gaeul Kim, Dohoon Kim - May2026
+		a. Summary: MAVLink interception/proxying, packet sniffing, protocol fingerprinting, GPS telemetry identification, command injection, waypoint modification, GCS spoofing, and communication analysis are explicitly considered.
+		b. DOI Link: https://doi.org/10.32604/cmc.2026.078931
+	
+4. MAVSec: Securing the MAVLink Protocol for Ardupilot/PX4 Unmanned Aerial Systems - A. Allouch et al - June 2019
+		a. Summary: Establishes why MAVLink is such an interesting target and evaluates AES-CBC, AES-CTR, ChaCha20 and other encryption approaches for protecting drone/GCS communications
+		b. DOI Link: https://doi.org/10.48550/arXiv.1905.00265
+	
+5. A Novel Cipher for Enhancing MAVLink Security: Design, Security Analysis, and Performance Evaluation Using a Drone Testbed - B. Dixit et al - April 2025
+		a. Summary: Real drone testbeds compare AES-CTR and other encryption schemes; the 2026 work also incorporates Wi-Fi/RF links and uses Wireshark-based traffic analysis and cryptanalytic evaluation.
+		b. DOI Link: https://doi.org/10.48550/arXiv.2504.20626
+	
+6. Design and Performance Evaluation of Secure RF and WiFi-Based Communication in Drone Swarms via Testbed Implementation - B. Dixit - June 2026
+		a. Summary:Iincorporates Wi-Fi/RF links and uses Wireshark-based traffic analysis and cryptanalytic evaluation.
+		b. DOI Link: https://doi.org/10.48550/arXiv.2606.27028
+	
+7. Design and development of an SDR-based system for real-time detection and characterization of drone RF signatures - m. Saber et al - April 2026
+		a. Summary: Looks at passive RF monitoring of UAV/controller uplink and downlink traffic; commercial systems commonly operate in the 2.4/5 GHz ranges, but the important contribution is identifying/classifying signals rather than simply assuming the frequency.
+		b. DOI Link: https://doi.org/10.1038/s41598-026-48925-1
+	
+8. RF/WiFi-based UAV surveillance systems: A systematic literature review - I. Bisio - July 2024
+		a. Summary: Covers physical-layer RF fingerprinting and Wi-Fi packet-based surveillance of drone/controller links. 
+		b. DOI Link: https://doi.org/10.1016/j.iot.2024.101201
+	
+9. An investigation into Unmanned Aerial System (UAS) forensics: Data extraction & analysis - Thornton and Zadeh - June 2022
+		a. Summary: Proposes a forensic framework for extracting and analyzing evidence from drones and their controllers. 
+		b. DOI Link: https://doi.org/10.1016/j.fsidi.2022.301379.
+	
+10. Mission-preserving protocol defense: An in-situ MAVLink honeypot with benchmark-calibrated thresholds and constant-space logging - Z. Chen et al - August 2026
+		a. Summary: Detects protocol-layer attacks such as dangerous command injection and parameter enumeration while maintaining bounded forensic logging. 
+		b. DOI Link: https://doi.org/10.1016/j.comcom.2026.108613.
+	
+11. Timestamp Manipulation-Based GPS Spoofing Attacks on the MAVLink 2.0 Protocol for UAV Communication: An Empirical Study - Colton, Oracevic, and Dilek - December 2025
+		a. Summary: Shows that even MAVLink 2.0 signing has attack surfaces and validates the research using simulation, hardware-in-the-loop, and physical hardware testing.
+		b. DOI Link: https://doi.org/10.1109/TCOMM.2025.3644474
+	
+12. Evaluation and telemetry-based detection of GPS spoofing effects on UAV navigation using software-defined radio - Hakani, Rawat, Shah, and Verma - May 2026
+		a. Summary: Uses SDR and UAV telemetry to experimentally study GPS spoofing and then detect it through discrepancies between GPS, IMU, barometer, and other telemetry. 
+    b. DOI Link: https://doi.org/10.1038/s41598-026-53481-9
