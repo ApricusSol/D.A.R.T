@@ -1,0 +1,439 @@
+Defensive & Forensic Drone/UAV Communications Security
+Current Research Baseline for a Bachelor’s Cybersecurity Capstone
+Research window emphasized: 2025 through 9 September 2026
+
+Purpose
+This brief maps recent academic, vulnerability, laboratory, practitioner, and government work relevant to an integrated defensive and forensic UAV communications platform. It emphasizes passive RF discovery, packet/protocol analysis, authorized-lab threat modeling, cryptographic implementation posture, evidence preservation, and lawful counter-UAS detection/attribution use cases.
+Current team hardware: VTI Phoenix 2.0 and TTROARDS TT19. Open-ecosystem expansion targets include MAVLink, ArduPilot, PX4, and Pixhawk.
+Safety and legal scope: Testing should remain confined to owned/authorized systems and controlled RF environments. Counter-UAS mitigation authority is jurisdiction- and actor-specific; the most transferable capstone value is in passive detection, attribution, evidence, protocol hardening, and instrumented testbed research.
+
+Validation legend
+•	Simulation — software-only modeling or synthetic evaluation.
+•	Software-in-the-Loop (SITL) — autopilot/protocol software executed without a physical flight controller.
+•	Hardware-in-the-Loop (HIL) — real hardware integrated with simulated or partially simulated flight environment.
+•	Physical UAV — real flight hardware or a real drone testbed is used.
+•	Commercial/Proprietary UAV — consumer/enterprise product or proprietary ecosystem is directly tested.
+
+Executive summary
+The strongest 2026 evidence reinforces a cross-layer capstone direction rather than a single exploit or classifier. Recent RF work can passively identify drones and classify operating behavior; recent MAVLink work demonstrates signing/timestamp weaknesses and stealthy relay behavior; recent forensics work improves deleted-log recovery and tool validation; and airport guidance increasingly stresses multi-sensor detection, interoperability, evidence, spectrum coordination, and stakeholder workflow.
+Two August 2026 DJI CVEs are especially important for the cryptography workstream because they show how an otherwise strong encrypted Wi-Fi link can be undermined by adjacent trust failures: BLE transport exposes Wi-Fi credentials and trusted identifiers in cleartext in one case, while an unauthenticated BLE DUML interface can modify wireless configuration in another. This is exactly the distinction the capstone should make between attacking AES itself and attacking key handling, authentication, trust tokens, replay assumptions, and protocol composition.
+The open UAV ecosystem remains a valuable controlled research target. CVE-2026-1579 documents the consequences of MAVLink interfaces without message signing, while a 2026 IEEE Transactions on Communications paper demonstrates a timestamp/GPS manipulation attack against MAVLink 2.0 signing without knowing the secret key, validated across simulation, HIL, and a hardware environment. Those results support a detector that correlates protocol signing state, timestamps, navigation/time sources, and command-flow anomalies instead of relying on payload signatures alone.
+Three 2026 preprints further sharpen the boundary of prior art: one evaluates secure RF/Wi-Fi communication across a four-UAV physical swarm testbed, one compiles verified MAVLink runtime monitors to allocation-free C and evaluates them in ArduPilot SITL, and one integrates RF/acoustic/vision sensing on public datasets. They broaden crypto, protocol-monitoring, and sensor-fusion evidence, but still do not join RF discovery, packet interpretation, cross-ecosystem protocol evidence, and forensic reconstruction in one reusable platform.
+A defensible novelty claim is not that RF classification, packet capture, protocol reverse engineering, intrusion detection, cryptographic hardening, or drone forensics are individually new. The gap is integration. In the recent sources reviewed here, these capabilities are usually isolated by layer or ecosystem. A capstone can contribute an extensible “UAV Communications Observatory & Forensic Testbed” that passively identifies communication technologies, records packet and RF evidence, decodes open protocols, maps bidirectional flows, correlates telemetry/log artifacts, scores security posture, and validates controlled threat detections across both proprietary consumer drones and MAVLink systems.
+
+Highest-priority recent developments
+Area	Source / finding	Validation	Scope	Priority
+Crypto / proprietary	CVE-2026-77812: DJI BLE DUML exposes Wi-Fi PSK/SSID/trusted identifier.	Commercial	Isolated flaw	Very high
+C2 / proprietary	CVE-2026-78306: unauthenticated BLE DUML can alter wireless configuration.	Commercial	Isolated flaw	Very high
+MAVLink security	Colton et al.: timestamp/GPS manipulation against MAVLink 2.0 signing.	Sim + HIL + hardware	Attack study	Very high
+RF discovery	Saber et al.: USRP B210 + real-time spectrogram detection/classification.	Physical + commercial	Subsystem	Very high
+MITM detection	GALAXY / Shadow-GCS: stealthy relay attack + attention-LSTM IDS.	Experimental scenarios	Attack + IDS	Very high
+Forensics	Seong et al.: FLARE for ArduPilot/PX4/Betaflight logs and deleted-record recovery.	Software/artifacts	Forensic subsystem	Very high
+Forensic rigor	Lee et al.: NIST-CFTT-aligned testing methodology for drone forensic tools.	Commercial DJI	Validation framework	Very high
+Airport C-UAS	EUROCAE WG-115 + FAA/JRC guidance emphasize DTI, interoperability and interfaces.	Standards/guidance	Operational framework	High
+
+
+Immediate hardware-specific opportunities
+
+VTI Phoenix 2.0
+The available Phoenix 2.0 manual identifies a 2.440–2.471 GHz remote-control link and a 5 GHz Wi-Fi image-transmission system, with the phone connecting to an SSID in the form “Phoenix Drone ****.” This gives the team a clean two-link starting point: characterize the controller RF separately from the app/video Wi-Fi link, then correlate observed spectrum occupancy with packet-level traffic during mode changes. [33]
+•	Passive RF baseline: controller off/on, drone off/on, pairing, idle, motors armed, takeoff, video idle/active, app-only control, Return-to-Home, and GPS-assisted modes.
+•	Packet baseline: identify DHCP/DNS/local service discovery, transport protocols, traffic direction, video flow, control messages, and whether telemetry/GPS appears on the Wi-Fi side.
+•	Evidence goal: synchronized SDR timestamps + PCAP + screen/app event log + onboard/media timestamps, enabling cross-layer event reconstruction.
+
+TTROARDS TT19
+Public TT19 documentation consistently indicates 2.4 GHz remote control plus a phone Wi-Fi/FPV connection, although SSID naming and exact app details vary by product revision. That ambiguity is useful research rather than a blocker: the team can make hardware identification and communications discovery an explicit first-stage capability instead of assuming published marketing specifications are authoritative. [34]
+•	Determine whether RC and FPV/app links occupy the same 2.4 GHz band and measure channel behavior, coexistence, and mode-dependent activity.
+•	Map the phone-drone LAN and identify ports, flows, frame rates, directionality, and any commands sent from the app interface.
+•	Preserve a revision fingerprint: controller FCC markings, app package/version, SSID/BSSID, MAC OUIs, channel width, observed modulation characteristics, and firmware/app metadata where legally obtainable.
+
+Gap analysis and capstone opportunity
+Based on the reviewed 2025–2026 sources, no single recent platform was identified that integrates passive RF technology discovery, packet/protocol interpretation, controlled threat detection, cryptographic posture analysis, and forensic evidence correlation across both proprietary and open UAV ecosystems. This is an analytical gap statement, not a claim that no such system exists anywhere; it is the most defensible novelty position supported by the current source set.
+Proposed integrated platform: UAV Communications Observatory & Forensic Testbed
+1. RF discovery and fingerprinting — SDR-based spectral survey; detect likely UAV/controller activity; identify center frequencies/bandwidth; classify signal families; optionally perform device fingerprinting when sufficient training data exists.
+2. Packet and flow capture — Capture Wi-Fi/UDP/TCP/MAVLink where accessible; retain PCAP/PCAPNG; classify GCS→UAV vs UAV→GCS; visualize session timing, rates, ports, message types, and state transitions.
+3. Protocol adapters — Native MAVLink decoder first; plugin interface for proprietary/partially reversed protocols; map telemetry, GPS, battery, mode, commands, acknowledgements, and video/control channels without assuming one vendor.
+4. Authorized threat emulator — In SITL/HIL and owned lab hardware, reproduce benign relay, replay, malformed-message, timestamp, and configuration-change test cases needed to validate detection. Avoid field deployment of takeover/jamming functionality.
+5. Cryptographic posture analyzer — Record whether message signing is enabled; flag cleartext credential/trust material, static/reused secrets where observable, replay/timestamp anomalies, unauthenticated control paths, weak session binding, and protocol downgrade/version conditions. Evaluate AES implementations as systems, not as brute-force targets.
+6. Forensic evidence layer — Hash captures/logs; synchronize clocks; preserve provenance; correlate SDR events, PCAPs, app/controller logs, flight-controller logs, GPS/telemetry, and analyst annotations; produce reproducible incident timelines.
+7. Airport/enterprise mode — Passive detection/attribution profile with no mitigation action: RF observations, confidence, track/event correlation, device identity evidence, standardized export, and integration hooks for other DTI sensors or SOC/SIEM workflows.
+
+Recommended validation ladder
+Stage	What to validate	Exit criterion
+Simulation	Unit tests for parsers/classifiers; synthetic protocol abnormalities; cryptographic misuse test vectors.	Repeatable parser/classifier metrics
+SITL	PX4/ArduPilot MAVLink baseline, signed/unsigned comparisons, flow visualization, replay/timestamp anomaly detection, forensic logging.	Reproducible detections with known ground truth
+HIL	Pixhawk or similar flight controller with real telemetry radio/companion link; validate timing, resource cost, and evidence synchronization.	Stable timing/resource behavior on real FC hardware
+Physical UAV	Owned open-platform drone in a controlled test area; correlate live RF, PCAP, telemetry, and onboard logs.	Cross-source timeline agreement
+Commercial/proprietary UAV	Phoenix 2.0, TT19, and optionally a more documented DJI/Potensic platform; focus on passive discovery, app/network mapping, and forensic capture rather than unsupported field manipulation.	Repeatable passive characterization without disrupting safe operation
+
+Cryptography: what to test instead of “breaking AES”
+AES-128 and AES-256 are not realistic brute-force targets for this capstone. The experimentally useful question is whether the surrounding system preserves the assumptions that make AES secure. Recent UAV evidence supports the following attack-surface taxonomy:
+•	Key exposure and transport — e.g., credentials or trust identifiers carried in cleartext on an adjacent interface, as in CVE-2026-77812.
+•	Missing authentication — encrypted or local wireless connectivity does not help if a control interface accepts unauthenticated configuration/command messages, as illustrated by CVE-2026-78306 and unsigned MAVLink.
+•	Replay/timestamp/session binding — signed protocols can still fail if freshness or time-source assumptions can be manipulated; the 2026 MAVLink timestamp study is directly relevant.
+•	Key derivation/storage and session lifecycle — compare static PSKs, per-session keys, hardware-bound keys, PUF-derived keys, and authenticated encryption designs; document how key material is provisioned and rotated.
+•	Nonce/IV uniqueness and cipher mode — instrument owned systems or test implementations to detect repeat/non-unique nonces/IVs, misuse of unauthenticated encryption, and cipher/version downgrade opportunities.
+•	Endpoint compromise and app/controller trust — treat the phone app, controller, companion computer, firmware update path, and local services as part of the cryptographic system boundary.
+For a sponsor-facing demo, the strongest contrast is: “AES remains cryptographically strong; our platform verifies whether the surrounding UAV protocol actually uses keys, authentication, freshness, and session state safely.”
+Airport, private-contractor, and technology-transfer relevance
+Airport-focused sponsorship is most credible if the capstone emphasizes detection, attribution, evidence, interoperability, and test/validation rather than independent mitigation. FAA airport guidance calls out RF, radar, EO, and acoustic detection, warns about electromagnetic and operational impacts, and requires coordination for on-airport systems. The JRC C-UAS report similarly frames DTI as detection, localisation, tracking, classification, and identification, with sensor fusion as a central operational issue. [21–23]
+The U.S. legal landscape changed materially in 2026: DOJ/DHS issued an interim final rule implementing the SAFER SKIES Act framework for certain State, local, Tribal, and territorial law-enforcement/correctional agencies, including separate training/certification structures for detection/warning and mitigation, plus authorized-technology, spectrum, airspace, ATC-notification, reporting, privacy, and compliance requirements. Private contractors do not simply inherit independent mitigation authority; September 2026 Professional Services Council comments specifically ask DOJ/DHS to clarify contractor technical/operational support and developmental testing. [24, 26]
+A sponsor-friendly transfer path is therefore a passive or non-interfering “communications observability” platform: RF sensor integration, protocol-aware evidence, confidence scoring, event timelines, standards-aligned exports, and reproducible test methodology. EUROCAE WG-115 is actively developing airport C-UAS operational and interoperability standards, including ED-286A targeted for publication in December 2026, which makes interface design and performance metrics particularly timely. [25]
+
+Detailed source inventory
+The entries below prioritize sources that materially support a capstone capability or a current operational/legal constraint. “End-to-end” is used narrowly: a source must span more than one lifecycle stage (for example attack + detection, or acquisition + correlation + reporting), not merely evaluate one algorithm.
+[1] CVE-2026-77812 — Cleartext exposure of DJI drone Wi-Fi credentials via BLE
+CIRCL CNA; researchers Abdelrahman Yousef and Dr. Jordan Samhi credited. National Vulnerability Database / CVE, 21 Aug 2026. Source link
+Concise summary	DJI DUML messages carried over BLE can expose Wi-Fi SSID, PSK, and a trusted identifier during normal connection/QuickTransfer workflows.
+Actually demonstrated	A passive BLE observer within range can recover persistent Wi-Fi credentials and trust material, enabling later network access; vendor firmware updates are required.
+Validation	Commercial/Proprietary UAV
+Scope	Isolated vulnerability with cross-interface consequences.
+Why it matters	Direct evidence for “attack around AES”: compromise occurs through credential/trust exposure, not cryptanalysis. It also creates a concrete detection/logging case for BLE + Wi-Fi correlation.
+Sponsor / airport relevance	High: product-assessment, airport/enterprise assurance, and sponsor demos around cross-interface security posture.
+
+[2] CVE-2026-78306 — DJI Drone Bluetooth Interface Unauthenticated DUML Command Execution
+CVE/GitHub Advisory; researchers credited in vendor/CVE lineage. GitHub Advisory Database / CVE, 24 Aug 2026. Source link
+Concise summary	DJI drones expose an unauthenticated DUML command surface over Bluetooth that can modify wireless configuration and disrupt interfaces.
+Actually demonstrated	Within Bluetooth range, configuration such as SSID/PSK/channel can be changed; wireless interfaces can be reset or disrupted.
+Validation	Commercial/Proprietary UAV
+Scope	Isolated control-plane vulnerability.
+Why it matters	Useful for modeling authentication failures, configuration-change telemetry, app/interface trust, and detection of anomalous management events in an owned lab.
+Sponsor / airport relevance	High: recent commercial-drone vulnerability with straightforward defensive monitoring story.
+
+[3] CVE-2026-1579 — PX4 Autopilot Missing Authentication for Critical Function
+CISA/ICS-CERT; Dolev Aviv (Cyviation) credited. CVE / CISA ICS advisory, 31 Mar 2026. Source link
+Concise summary	Documents the risk of PX4 MAVLink interfaces when MAVLink 2.0 message signing is not enabled.
+Actually demonstrated	On affected PX4 v1.16.0 SITL, unauthenticated MAVLink messages including SERIAL_CONTROL can reach critical functionality; signing rejects unsigned messages.
+Validation	Software-in-the-Loop
+Scope	Isolated secure-default / configuration weakness.
+Why it matters	Provides an authoritative baseline for signed-vs-unsigned traffic experiments, posture checks, and a controlled threat model without needing proprietary hardware.
+Sponsor / airport relevance	Medium-high: excellent reproducible open-source test case and secure-configuration deliverable.
+
+[4] Timestamp Manipulation-Based GPS Spoofing Attacks on the MAVLink 2.0 Protocol for UAV Communication: An Empirical Study
+Zack Colton, Alma Oracevic, Selma Dilek. IEEE Transactions on Communications, Vol. 74, 2026. Source link
+Concise summary	Analyzes MAVLink 2.0 signing freshness assumptions and introduces a GPS/time manipulation path that does not require the UAV secret key.
+Actually demonstrated	Attack evaluated in simulation, HIL, and hardware-environment tests; countermeasures are discussed.
+Validation	Simulation + Hardware-in-the-Loop + hardware environment
+Scope	Attack study, not a complete defense platform.
+Why it matters	Ideal basis for a disagreement/anomaly detector that combines signing state, timestamp behavior, GPS/time source consistency, and command-flow evidence.
+Sponsor / airport relevance	High: strong peer-reviewed evidence and a measurable detection benchmark.
+
+[5] GALAXY: Generalized Attention-Based LSTM Architecture with External Query for Intrusion Detection in UAV Communication
+Jae Yeon Lee, Huy Kang Kim. IEEE PRDC 2025, pp. 34–44, Nov 2025. Source link
+Concise summary	Introduces Shadow-GCS, a stealthy relay-based MAVLink MITM model, then evaluates existing IDS approaches and proposes an interpretable attention-LSTM detector.
+Actually demonstrated	A relay maintains normal GCS traffic while injecting commands; a dataset from four realistic UAV-GCS scenarios is used to test detection.
+Validation	Experimental UAV-GCS scenarios; exact physical/SITL level not explicit in accessible metadata
+Scope	Attack + IDS framework (multi-stage, but protocol-layer only).
+Why it matters	Direct match for controlled MITM detection and bidirectional traffic features. Its dataset can provide an external benchmark before your own testbed data exist.
+Sponsor / airport relevance	High: strong demonstration narrative for sponsors—stealthy threat plus interpretable detection.
+
+[6] Mission-preserving protocol defense: An in-situ MAVLink honeypot with benchmark-calibrated thresholds and constant-space logging
+Zigang Chen, Zheng Cao, Fulin Yu, Xiaochen Yuan, Haihua Zhu. Computer Communications 257, 108613, 1 Aug 2026. Source link
+Concise summary	Presents a lightweight onboard MAVLink honeypot emphasizing predictable runtime cost, behavioral mitigation, and bounded logging.
+Actually demonstrated	Containerized embedded-like evaluation reports low CPU/memory cost and sub-second response across representative MAVLink abuse scenarios with constant-space ring-buffer logs.
+Validation	Software / containerized embedded-like environment
+Scope	Defensive subsystem.
+Why it matters	Shows how to make protocol defense measurable under embedded constraints and gives a concrete design pattern for forensic logging that does not exhaust storage.
+Sponsor / airport relevance	High for embedded-security sponsorship; medium for airport use unless integrated into a broader observability stack.
+
+RF discovery, fingerprinting, and classification
+[7] Design and development of an SDR-based system for real-time detection and characterization of drone RF signatures
+Mgannem Saber, Radhoine Aloui, Tijeni Delleji, Bilel Hamdi, Sofien Mhatli, Feten Slimeni, Ignacio LLamas-Garro, et al.. Scientific Reports 16, 18311, 20 Apr 2026. Source link
+Concise summary	Low-cost real-time RF detection/classification using a USRP B210, GNU Radio/Python, spectrograms, and object-detection models.
+Actually demonstrated	Captures and classifies drone/non-drone RF in realistic noisy spectrum; includes commercial DJI Phantom 4 Pro activity at 2.4 GHz and wide SDR coverage.
+Validation	Physical UAV + Commercial/Proprietary UAV
+Scope	RF discovery/classification subsystem.
+Why it matters	Strong blueprint for the “what is transmitting and where?” stage before any packet decoding. It also gives a realistic SDR hardware path for a student team.
+Sponsor / airport relevance	Very high for airport/critical-infrastructure detection prototypes because the sensing approach is passive.
+
+[8] Designing an attention-based approach for RF fingerprinting in drone detection and classification
+Ammar Abdulrasool Muneer, Morteza Valizadeh, Alaa Hussein Abdulaal, Mehdi Chehel Amirani. Scientific Reports, 20 Jul 2026. Source link
+Concise summary	Transformer-based RF model evaluated for drone detection, drone class, and flight-mode classification, including 2.4 and 5.8 GHz real-world datasets.
+Actually demonstrated	High accuracy on DroneRF and substantial performance on VTI_DroneSET_FFT across single- and multi-drone scenarios, with an edge-oriented model footprint.
+Validation	Real-world RF datasets
+Scope	RF classification subsystem.
+Why it matters	Useful for comparing spectrum-only detection with packet-aware classification and for evaluating whether a smaller model can run near the sensor.
+Sponsor / airport relevance	High: edge-deployable passive sensing is aligned with airport and facility detection.
+
+[9] UAV Individual Identification via Distilled RF Fingerprints-Based LLM in ISAC Networks
+Haolin Zheng, Ning Gao, Donghong Cai, Shi Jin, Michail Matthaiou. IEEE Wireless Communications Letters 14(11), 2025. Source link
+Concise summary	Uses knowledge distillation to compress an RF-fingerprint model for individual UAV identification.
+Actually demonstrated	Self-built I/Q dataset of 20 commercial UAVs on channel 149; reports 98.38% identification with a lightweight model and low inference latency.
+Validation	Commercial UAV RF captures
+Scope	Device-attribution subsystem.
+Why it matters	Supports a practical attribution tier beyond “drone present”: identify or enroll specific transmitters and correlate them with network/forensic evidence.
+Sponsor / airport relevance	High for detection/attribution and technology-transfer discussions.
+
+[10] Few-Shot Radio Frequency Fingerprint Identification for UAVs Based on Gaussian Prototypical Network Model
+Wei Xie, Hongjun Wang, Zhexian Shen, Xinhao Li, Feng Shu, Hao Jiang. IEEE Communications Letters 29(10), 23 Jul 2025. Source link
+Concise summary	Few-shot RF fingerprinting designed to enroll new UAVs without full retraining.
+Actually demonstrated	Experiments on real UAV signals show competitive identification while requiring fewer samples for new-device enrollment.
+Validation	Physical RF signal dataset
+Scope	Attribution/classification subsystem.
+Why it matters	Particularly relevant if hardware selection expands: a sponsor-friendly system should adapt to newly encountered drone models without rebuilding the entire classifier.
+Sponsor / airport relevance	High for operational scalability and multi-vendor sensor deployments.
+
+Protocol reverse engineering and cryptographic design
+[11] A Novel Cipher for Enhancing MAVLink Security: Design, Security Analysis, and Performance Evaluation Using a Drone Testbed
+Bhavya Dixit, Ananthapadmanabhan A., Adheeba Thahsin, Saketh Pathak, Gaurav S. Kasbekar, Arnab Maity. IEEE Open Journal of the Communications Society 6, 2025. Source link
+Concise summary	Implements MAVShield alongside AES-CTR, ChaCha20, Speck-CTR, and Rabbit and compares security/performance on a real drone testbed.
+Actually demonstrated	Real testbed measurements include compute, memory, battery/power, and statistical security testing rather than simulation-only claims.
+Validation	Physical UAV / real drone testbed
+Scope	Crypto subsystem.
+Why it matters	Provides an empirical benchmark for encryption overhead and a way to discuss why cipher choice is only one part of secure MAVLink design.
+Sponsor / airport relevance	Medium-high: useful if a sponsor values embedded performance and secure communications.
+
+[12] PUF-Based Authentication and Encryption Scheme for Enhancing MAVLink2 Security between a Command and Control Vessel and Unmanned Platforms
+Sangyeol Yun, Wanju Kim, Jaesung Lim. Journal of the Korea Institute of Information and Communication Engineering 29(6), 2025. Source link
+Concise summary	Proposes a PUF-assisted authentication/key-establishment design combining challenge-response, signatures, dynamic session keys, and authenticated encryption concepts for MAVLink2.
+Actually demonstrated	The accessible publication describes a software/simulation-oriented validation rather than a full embedded deployment.
+Validation	Simulation / software
+Scope	Crypto architecture proposal.
+Why it matters	Useful contrast for static keys vs device-bound/session-derived keys and for explaining replay/MITM defenses around AES.
+Sponsor / airport relevance	Medium: more architecture-oriented than deployment-ready, but useful for security design rationale.
+
+[13] Reversing DJI Enhanced Wi-Fi Protocol
+Feng Zhou; supervisors Giacomo Verticale and Javier Matanza Domingo. Master’s thesis, Politecnico di Milano / Comillas exchange, 3 Apr 2025. Source link
+Concise summary	Reverse engineers DJI Enhanced Wi-Fi packet structure and semantics through wireless capture and analysis.
+Actually demonstrated	Identifies packet format, sender/receiver roles, command sets/checksums, and extracts meaningful flight information including location and relative height from captured traffic.
+Validation	Commercial/Proprietary UAV
+Scope	Protocol reverse-engineering subsystem.
+Why it matters	This is one of the closest references to the team’s desired packet-flow visualization and telemetry extraction for a proprietary platform.
+Sponsor / airport relevance	High: directly demonstrates that proprietary drone traffic can be transformed into analyst-readable evidence without requiring a full vendor SDK.
+
+Drone/controller forensics and incident reconstruction
+[14] Correlation analysis of pilots and drones using DJI cloud forensic data
+Hangyeol Kim, Dabin We, Wonseok An, Myungseo Park. Forensic Science International: Digital Investigation 57, 302101, Jun 2026. Source link
+Concise summary	Reconstructs DJI mobile-app/cloud network behavior to correlate pilots, drones, actions, flights, and locations when local evidence may be missing.
+Actually demonstrated	Uses a real-world flight experimental environment and app/network traffic reconstruction to obtain and correlate user/flight evidence.
+Validation	Commercial/Proprietary UAV + real-world flights
+Scope	Multi-stage forensic workflow (network + cloud + correlation).
+Why it matters	Strong model for correlating live traffic with post-incident evidence and for designing a unified timeline view. Cloud access must remain lawful and authorized.
+Sponsor / airport relevance	High for incident response/public safety; demonstrates operator-attribution value.
+
+[15] Flight log analysis and recovery for open-source drones: Focusing on ArduPilot, PX4, and Betaflight
+Mingyu Seong, Woosung Yun, Chulhan Lee, Seokhee Lee, Jungheum Park. Computers & Electrical Engineering 135, 111144, Jul 2026. Source link
+Concise summary	Analyzes open-source flight-log formats and introduces FLARE for analysis and recovery of deleted log remnants from unallocated storage.
+Actually demonstrated	Practical carving/recovery method and open-source forensic tool for ArduPilot, PX4, and Betaflight artifacts.
+Validation	Software/tool + real firmware/storage artifacts
+Scope	Forensic subsystem.
+Why it matters	Excellent open-ecosystem companion to live PCAP capture: the capstone can prove that network observations and onboard logs agree—or explain why they do not.
+Sponsor / airport relevance	High for evidence preservation and cross-ecosystem portability.
+
+[16] Drone forensic tool testing: Methodology and applications
+Sangchul Lee, Woosung Yun, Chanjin Park, Jieon Kim, Jungheum Park. Forensic Science International: Digital Investigation 58, 302137, Sep 2026. Source link
+Concise summary	Develops a drone-specific forensic-tool testing methodology aligned with the NIST Computer Forensics Tool Testing approach.
+Actually demonstrated	Empirically applies requirements/assertions/test cases to commercial, free, open-source, and web tools using DJI models; the authors frame the DJI validation as proof-of-concept, not universal ecosystem coverage.
+Validation	Commercial/Proprietary UAV
+Scope	Validation framework.
+Why it matters	Gives the capstone a rigorous way to test its own parser/logger/reporting accuracy and avoid “demo-only” claims.
+Sponsor / airport relevance	Very high: validation methodology increases sponsor confidence and technology-transfer credibility.
+
+[17] DroPTC: Sentence-level drone flight log forensics using contrastive learning and explainable AI
+Swardiantara Silalahi, Tohari Ahmad, Hudan Studiawan, Frank Breitinger. DFRWS EU 2026 / Forensic Science International: Digital Investigation 56 Suppl., 302051, Mar 2026. Source link
+Concise summary	End-to-end log-analysis framework for identifying problem types at sentence level with interpretable ML and report generation.
+Actually demonstrated	Working open-source implementation consumes decrypted flight logs and produces HTML/PDF forensic reports; evaluation covers accuracy, trustworthiness, and efficiency.
+Validation	Software/tool
+Scope	End-to-end log-analysis/reporting framework, but not live RF/network capture.
+Why it matters	Useful reference for analyst-facing reporting, explainability, deduplication, and root-cause classification after evidence has been acquired.
+Sponsor / airport relevance	Medium-high: strong DFIR usability story.
+
+[18] Drone forensics redefined: Integrating live, digital, and non-digital evidence acquisition systems
+Dongkyu Lee, Wook Kang. Forensic Science International: Synergy 11, 100635, Dec 2025. Source link
+Concise summary	Proposes an integrated forensic perspective combining live, digital, and physical/non-digital evidence.
+Actually demonstrated	Primarily an architectural/forensic framework in the accessible record rather than a fully validated communications-security platform.
+Validation	Conceptual framework
+Scope	End-to-end forensic architecture concept.
+Why it matters	Supports the capstone’s decision to preserve RF/packet evidence together with device/log artifacts and chain-of-custody context.
+Sponsor / airport relevance	Medium: useful for framing evidence lifecycle and legal soundness.
+
+Security-lab, practitioner, government, and standards research
+[19] Drone Hacking Part 1: Dumping Firmware and Bruteforcing ECC
+Tim and Thomas (Neodyme). Neodyme security-lab research, 5 Jan 2026. Source link
+Concise summary	Documents a commercial Potensic Atom 2 teardown and firmware-acquisition/reconstruction workflow as the first stage of a broader security assessment.
+Actually demonstrated	Physical hardware teardown and NAND acquisition/reconstruction produced a usable firmware image for subsequent analysis.
+Validation	Commercial/Proprietary UAV + physical hardware
+Scope	Security-lab reverse-engineering methodology.
+Why it matters	Useful if the team expands beyond network-only analysis: it shows how proprietary firmware/app/controller research can complement RF and packet observations.
+Sponsor / airport relevance	High for sponsor-facing product security assessment capability; keep procedures confined to owned hardware.
+
+[20] Independent cybersecurity assessment of DJI Air 3S and Matrice 4E
+OnDefend; assessment commissioned by DJI. Independent product security assessment / DJI release, 28 May 2026. Source link
+Concise summary	Five-month adversarial assessment across software, hardware, network traffic, supply-chain, and RF domains on retail/standard DJI systems.
+Actually demonstrated	Assessment included static/dynamic app testing, network traffic analysis, full-spectrum RF scanning, teardown, and adversary simulation; reported zero critical/high/medium findings and lower-severity hardening observations.
+Validation	Commercial/Proprietary UAV
+Scope	Broad end-to-end product assessment, not an open reusable platform.
+Why it matters	A useful blueprint for assessment scope and sponsor language. Because the work was commissioned by DJI, treat it as practitioner evidence and preserve that provenance when citing conclusions.
+Sponsor / airport relevance	Very high for technology-transfer language: it demonstrates demand for integrated RF + app + network + hardware assurance.
+
+[21] Technical developments in counter-drone technology: C-UAS detection, tracking and identification technology
+Gerald Poppinga, David Anderson, Danilo Amendola. European Commission Joint Research Centre, JRC140692, 27 Feb 2025. Source link
+Concise summary	Comprehensive technical report on C-UAS detection, localisation, tracking, classification, and identification across RF, radar, EO, and acoustic sensing.
+Actually demonstrated	Technology synthesis and operational guidance; highlights strengths/limitations of sensing modalities and sensor fusion.
+Validation	Government technical report / review
+Scope	Operational technology framework.
+Why it matters	Provides the vocabulary and system context needed to position an RF-first capstone as one sensor/evidence layer in a larger DTI architecture.
+Sponsor / airport relevance	Very high for airport and critical-infrastructure sponsorship.
+
+[22] UAS Detection, Mitigation, and Response on Airports
+Federal Aviation Administration. FAA airport guidance, Current page; guidance set updated through Jun 2025. Source link
+Concise summary	Explains airport detection/mitigation categories, sensor types, coordination needs, EMI/airspace concerns, and response-plan context.
+Actually demonstrated	Operational guidance rather than a research demonstration.
+Validation	Government guidance
+Scope	Operational/legal framework.
+Why it matters	Essential boundary conditions for an airport-facing capstone: passive RF sensing and evidence are more transferable than independently exercising mitigation capability.
+Sponsor / airport relevance	Very high for airport innovation programs and sponsor risk review.
+
+[23] Best Practices for the Submission of On-Airport UAS Detection and Mitigation System(s) into OE/AAA
+Federal Aviation Administration, Office of Airports Emerging Entrants Division. FAA best-practices handout, Jun 2025. Source link
+Concise summary	Specifies information and coordination expectations for on-airport detection/mitigation system proposals, including passive/active status, antennas, locations, and supporting documentation.
+Actually demonstrated	Administrative/engineering submission guidance.
+Validation	Government guidance
+Scope	Deployment process framework.
+Why it matters	Useful for designing sponsor documentation: record RF emissions, antenna/system geometry, passive-vs-active behavior, and configuration provenance from day one.
+Sponsor / airport relevance	Very high for airport transfer/deployment planning.
+
+[24] Counter-UAS Authority for State, Local, Tribal, and Territorial Law Enforcement and Correctional Agencies
+U.S. Department of Justice and Department of Homeland Security. Interim final rule, 91 FR 41466, Effective 1 Jul 2026; published 6 Jul 2026. Source link
+Concise summary	Implements the SAFER SKIES Act framework for specified SLTT agencies, covering training/certification, authorized technologies, spectrum coordination, airspace approval, ATC notification, reporting, privacy, and compliance.
+Actually demonstrated	Regulatory framework; not a technical demonstration.
+Validation	Government regulation
+Scope	Authority/compliance framework.
+Why it matters	Defines who may exercise certain C-UAS authorities and under what governance. The capstone should not equate technical capability with legal authority.
+Sponsor / airport relevance	Very high for public-safety/private-contractor sponsor discussions.
+
+[25] WG-115 Counter UAS
+EUROCAE. Aviation standards working group, Current; ED-286A target 31 Dec 2026. Source link
+Concise summary	Develops standards for safe, harmonized C-UAS implementation in airports/ANSP environments, emphasizing surveillance, performance, interoperability, and stakeholder interfaces.
+Actually demonstrated	Standards development; ED-286 and ED-322 published, ED-286A and additional interoperability work in progress.
+Validation	Standards / operational framework
+Scope	Interoperability framework.
+Why it matters	Strong signal that a student platform should expose documented interfaces, performance metrics, and standardized event/evidence output rather than operate as a closed demo.
+Sponsor / airport relevance	Very high for airport innovation and standards-aware commercialization.
+
+[26] PSC Comments on IFR for Counter-UAS Authority for SLTT Law Enforcement Agencies
+Professional Services Council. Industry association comments to DOJ/DHS, 8 Sep 2026. Source link
+Concise summary	Industry comments support responsible expansion of C-UAS authority while raising concerns over contractor participation, developmental testing, automation ambiguity, and authorization transparency.
+Actually demonstrated	Policy/practitioner development, not a technical test.
+Validation	Practitioner / policy
+Scope	Market and implementation signal.
+Why it matters	Directly relevant to sponsorship: private firms may support authorized programs, but developmental testing and operational roles need clear legal/contractual structure.
+Sponsor / airport relevance	Very high for private-contractor and technology-transfer positioning.
+
+[27] Black Hat USA 2026 Drone Zone / 2025 UAS Drone Hacking Workshop
+Black Hat. Practitioner conference program, 2025–2026. Source link
+Concise summary	Black Hat continues hands-on drone-security programming, including a 2026 Drone Zone and a 2025 Dark Wolf Solutions UAS Drone Hacking Workshop.
+Actually demonstrated	Conference/practitioner training ecosystem demonstrates sustained demand for UAV, GCS, RF, embedded, and app security skills.
+Validation	Practitioner / conference lab
+Scope	Training/practice ecosystem, not peer-reviewed research.
+Why it matters	Useful external validation that a cross-layer UAV security testbed maps to current practitioner skill sets and potential employer/sponsor interests.
+Sponsor / airport relevance	Medium-high: strong workforce-development and demo-day relevance.
+
+Recent preprints and emerging prototypes
+[28] Design and Performance Evaluation of Secure RF and WiFi-Based Communication in Drone Swarms via Testbed Implementation
+Bhavya Dixit, Aayushi Rajgor, Subham Kumar, Rushikesh Patil, Ananthapadmanabhan A., Gaurav S. Kasbekar, Arnab Maity. arXiv preprint 2606.27028, 25 Jun 2026. Source link
+Concise summary	Extends lightweight MAVLink encryption work into a four-UAV swarm communicating over RF and Wi-Fi and compares MAVShield with AES-CTR, Speck-CTR, ChaCha20, and Rabbit.
+Actually demonstrated	Flight experiments on four custom-built UAVs measure CPU, memory, packet-delivery ratio, and secure telemetry behavior while supporting formation control and collision avoidance.
+Validation	Physical UAV / custom swarm testbed
+Scope	Secure-communications subsystem and swarm testbed; not a cross-layer forensic platform.
+Why it matters	A useful current benchmark for crypto overhead and for demonstrating that secure communication design must be evaluated under real flight/network load rather than by cipher strength alone.
+Sponsor / airport relevance	High for embedded/communications sponsorship; medium for airport use because the contribution is secure cooperative communication rather than passive DTI.
+
+[29] From High-Level Types to Low-Level Monitors: Synthesizing Verified Runtime Checkers for MAVLink
+Arthur Amorim, Paul Gazzillo, Max Taylor, Lance Joneckis. arXiv preprint 2604.03886, 4 Apr 2026. Source link
+Concise summary	Introduces Platum, a specification-to-C workflow for runtime checking of contextually valid MAVLink message sequences at the GCS/UAV boundary.
+Actually demonstrated	Generates flat, allocation-free C finite-state monitors and evaluates latency/memory improvements using ArduPilot SITL.
+Validation	Software-in-the-Loop
+Scope	Protocol runtime-monitoring subsystem.
+Why it matters	Directly supports semantic command-flow detection: a packet can be syntactically valid yet wrong for the current mission state. This complements statistical IDS and signing checks.
+Sponsor / airport relevance	High for safety/security assurance and a strong candidate for rule-vs-ML disagreement experiments.
+
+[30] DroneShield-AI: A Multi-Modal Sensor Fusion Framework for Real-Time Autonomous Drone Threat Detection, Behavioral Intent Classification, and Swarm Intelligence in Contested Airspace
+Marius Bayizere. arXiv preprint 2606.11687, 10 Jun 2026. Source link
+Concise summary	Proposes a six-layer open framework combining RF, acoustic, visual detection, evidence-weighted sensor fusion, behavioral classification, and swarm analysis.
+Actually demonstrated	Evaluated on three public real-world datasets and reports end-to-end detection metrics on commodity CPU-class hardware; no integrated packet/protocol or drone-forensic evidence workflow is demonstrated in the preprint record.
+Validation	Software / real-world datasets
+Scope	Multi-modal detection framework; broader sensing integration but not communications forensics.
+Why it matters	Important prior art against an overly broad “integrated drone-security platform” novelty claim. It suggests the capstone should differentiate through protocol-aware evidence, bidirectional flows, cryptographic posture, and forensic reconstruction.
+Sponsor / airport relevance	High for airport/sensor-fusion context; treat performance claims as preprint evidence pending peer review.
+
+Key implementation references (not research contributions)
+PX4 MAVLink Security Hardening for Production Deployments — PX4 Project documentation. Link. Documents that MAVLink messages are unauthenticated by default and provides signing/hardening context; use as the authoritative implementation baseline for controlled signed/unsigned experiments.
+MAVLink Wireshark support / protocol tooling — MAVLink project documentation. Link. Supports protocol-aware packet capture and dissector workflows for PCAP/PCAPNG; useful for reproducible packet visualizations and field extraction.
+VTI Phoenix 2.0 manual — Product manual. Link. Identifies 2.440–2.471 GHz controller frequency and 5 GHz Wi-Fi image transmission; establishes a documented hypothesis for passive RF verification.
+TTROARDS TT19 manual — Product manual. Link. Identifies a 2.4 GHz remote-control feature set and phone Wi-Fi/FPV workflow; exact app/SSID details may vary by revision and should be empirically verified.
+Capability coverage matrix
+Source family	RF discovery	Packet / protocol	Threat detection	Crypto posture	Forensics	Airport / ops
+2026 SDR/RFF papers	Strong	Weak	None	None	None	Strong
+MAVLink attack/IDS papers	None	Strong	Strong	Med.	Med.	Weak
+MAVLink crypto papers	None	Med.	Weak	Strong	Weak	Weak
+DJI RE/CVEs	Weak	Strong	Med.	Strong	Med.	Weak
+2026 forensic papers	None	Med.	Weak	Weak	Strong	Med.
+2026 emerging preprints	Med.	Strong	Strong	Strong	Weak	Med.
+OnDefend product assessment	Strong	Strong	Strong	Med.	Med.	Med.
+FAA/JRC/EUROCAE	Strong	Weak	Med.	None	Med.	Strong
+Proposed capstone platform	Strong	Strong	Strong	Strong	Strong	Strong
+
+The matrix shows the core novelty opportunity: most recent work is deep in one or two layers. The capstone becomes materially different when the same timestamped case file can connect “RF energy appeared” → “a specific network/protocol flow began” → “a command or anomaly occurred” → “onboard/controller logs recorded the result” → “the evidence can be reproduced and validated.”
+
+Measurable outcomes for a sponsor-facing capstone
+
+RF discovery — Detection probability / false-alarm rate; center-frequency and bandwidth estimation error; device/model classification accuracy; time-to-identification.
+
+Packet/protocol — Percent of captured traffic automatically classified; percent of MAVLink message types decoded; GCS-to-UAV / UAV-to-GCS flow attribution accuracy; telemetry/GPS extraction accuracy.
+
+Threat detection — Detection rate, false-positive rate, detection latency, and disagreement rate across rule/signature vs statistical/ML detectors.
+
+Cryptographic posture — Correct identification of signing/authentication status; replay/timestamp anomaly detection; static/reused credential/session findings in owned test systems; measured crypto overhead where applicable.
+
+Forensics — Cross-source timestamp alignment error; recovered artifact completeness; hash/provenance verification; event-reconstruction accuracy against a scripted ground-truth flight.
+
+Portability — Number of supported ecosystems/models; time required to add a new protocol/RF profile; percentage of core pipeline reused across Phoenix 2.0, TT19, and MAVLink/Pixhawk targets.
+
+Operational fit — CPU/memory/storage cost at sensor/edge node; analyst time to produce an incident report; standardized export/API completeness; passive-sensor non-interference verification.
+
+Recommended next research/design decisions
+•	Make “cross-layer correlation” the thesis of the platform, not “we hacked a drone.” The literature already contains many isolated attacks; integration, reproducibility, and evidence quality are more defensible contributions.
+•	Use MAVLink/PX4/ArduPilot as the fully instrumentable reference ecosystem and Phoenix 2.0/TT19 as proprietary black-box comparison targets. This prevents the project from depending on successful reverse engineering of one low-cost consumer model.
+•	Treat RF discovery as Stage 0. A system that first determines which band/link is active before selecting capture/decoder modules is more adaptable and more relevant to airport detection workflows.
+•	Build a strict evidence model early: monotonic + wall-clock timestamps, capture hashes, device/app/firmware metadata, test-case IDs, operator actions, and ground-truth labels. Apply the 2026 drone-forensic tool-testing methodology to your own outputs.
+•	For cryptography, demonstrate secure-vs-insecure system composition: signed vs unsigned MAVLink, freshness/time anomalies, static vs rotated keys in your own test implementation, and detection of credential/trust leakage conditions. Do not make brute-force AES a milestone.
+•	Keep airport “mitigation” as a policy/testbed integration topic unless the team has explicit institutional authorization. Demonstrate safe-land/shutdown logic in SITL/HIL or through legitimate APIs on owned equipment, and focus physical RF work on passive sensing and evidence.
+
+ Sources
+Links below are the primary/official or publisher records used for this baseline. The recurring research watch should treat this list as the comparison baseline and alert only on meaningful deltas.
+1. NVD, CVE-2026-77812. Link
+2. GitHub Advisory, CVE-2026-78306. Link
+3. CVE.org, CVE-2026-1579. Link
+4. Colton et al., IEEE TCOM 2026. Link
+5. Lee & Kim, GALAXY, PRDC 2025. Link
+6. Chen et al., Computer Communications 2026. Link
+7. Saber et al., Scientific Reports 2026. Link
+8. Muneer et al., Scientific Reports 2026. Link
+9. Zheng et al., IEEE WCL 2025. Link
+10. Xie et al., IEEE Communications Letters 2025. Link
+11. Dixit et al., IEEE OJCOMS 2025. Link
+12. Yun et al., JKIICE 2025. Link
+13. Zhou, Reversing DJI Enhanced Wi-Fi Protocol. Link
+14. Kim et al., DJI cloud forensics 2026. Link
+15. Seong et al., Open-source drone log recovery 2026. Link
+16. Lee et al., Drone forensic tool testing 2026. Link
+17. Silalahi et al., DroPTC 2026. Link
+18. Lee & Kang, Drone forensics redefined 2025. Link
+19. Neodyme, Drone Hacking Part 1. Link
+20. DJI/OnDefend assessment announcement. Link
+21. European Commission JRC140692. Link
+22. FAA UAS Detection, Mitigation, and Response on Airports. Link
+23. FAA OE/AAA Best Practices. Link
+24. DOJ UAS/C-UAS resources and 2026 regulation. Link
+25. EUROCAE WG-115 Counter UAS. Link
+26. Professional Services Council comments, Sep 2026. Link
+27. Black Hat USA 2026 Drone Zone. Link
+28. Dixit et al., secure RF/Wi-Fi UAV swarm preprint 2026. Link
+29. Amorim et al., Platum MAVLink runtime monitors preprint 2026. Link
+30. Bayizere, DroneShield-AI preprint 2026. Link
+31. PX4 MAVLink Security Hardening. Link
+32. MAVLink Wireshark guide. Link
+33. VTI Phoenix 2.0 manual. Link
+34. TTROARDS TT19 manual. Link
+Research caveat: The source set is intentionally recent and capability-focused rather than exhaustive across all historical UAV security literature. Validation labels reflect what the accessible source record explicitly supports; ambiguous cases are labeled conservatively.
