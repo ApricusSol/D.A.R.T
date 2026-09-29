@@ -10,7 +10,6 @@ import datetime
 
 # Configuration constants
 INTERFACE = "wlan0"
-# Get the original user who ran sudo to avoid root restriction errors, default to 'user'
 ACTUAL_USER = os.environ.get("SUDO_USER", "user") 
 DESKTOP_PATH = f"/home/{ACTUAL_USER}/Desktop"
 TIMESTAMP = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -24,7 +23,6 @@ def log_action(action):
     with open(LOG_FILE, "a") as f:
         f.write(log_message)
     
-    # Ensure the log file is owned by the actual user if created by root
     try:
         uid = int(subprocess.getoutput(f"id -u {ACTUAL_USER}"))
         gid = int(subprocess.getoutput(f"id -g {ACTUAL_USER}"))
@@ -37,7 +35,10 @@ def run_command(command):
     subprocess.run(command, shell=True, check=False, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 def enable_monitor_mode():
-    """Brings the interface down, switches it to monitor mode, and brings it back up."""
+    """Kills interfering processes, brings interface down, switches to monitor mode, and brings it up."""
+    log_action("Killing interfering network processes (airmon-ng check kill)...")
+    run_command("airmon-ng check kill")
+
     log_action(f"Setting {INTERFACE} down...")
     run_command(f"ip link set {INTERFACE} down")
     
@@ -49,7 +50,7 @@ def enable_monitor_mode():
     log_action(f"{INTERFACE} is now in monitor mode.")
 
 def disable_monitor_mode():
-    """Brings the interface down, switches it back to managed mode, and brings it back up."""
+    """Brings interface down, switches to managed mode, brings it up, and restores network services."""
     log_action(f"Setting {INTERFACE} down...")
     run_command(f"ip link set {INTERFACE} down")
     
@@ -58,37 +59,44 @@ def disable_monitor_mode():
     
     log_action(f"Bringing {INTERFACE} up...")
     run_command(f"ip link set {INTERFACE} up")
-    log_action(f"{INTERFACE} has been restored to managed mode.")
+    
+    log_action("Restarting NetworkManager service to restore internet connectivity...")
+    run_command("systemctl restart NetworkManager")
+    
+    log_action(f"{INTERFACE} has been restored to managed mode and network services restarted.")
 
 def main():
-    # Ensure the script is executed with root privileges
     if os.geteuid() != 0:
         sys.exit("This script must be run as root (sudo).")
         
     log_action("Script execution started.")
     
-    # Switch the network adapter to monitor mode
     enable_monitor_mode()
     
     log_action(f"Launching Wireshark GUI. Capture file will be saved to: {CAPTURE_FILE}")
     
-    # Launch Wireshark as the standard user to bypass root GUI and permission restrictions
-    process = subprocess.Popen(["sudo", "-u", ACTUAL_USER, "wireshark", "-i", INTERFACE, "-k", "-w", CAPTURE_FILE])
+    # Removed the -I flag. Since the script already manually set monitor mode as root, 
+    # unprivileged Wireshark doesn't need to (and doesn't have permission to) set it again.
+    # The -p flag is kept to prevent Wireshark from attempting to set promiscuous mode.
+    process = subprocess.Popen([
+        "sudo", "-u", ACTUAL_USER, 
+        "wireshark", 
+        "-i", INTERFACE, 
+        "-p", 
+        "-k", 
+        "-w", CAPTURE_FILE
+    ])
     
     try:
-        # Wait for the Wireshark process to complete or be interrupted
         process.wait()
         log_action("Capture process terminated by user.")
     except KeyboardInterrupt:
-        # Handle Ctrl+C to cleanly stop the capture before restoring adapter state
         log_action("Keyboard interrupt detected. Terminating capture.")
         process.terminate()
         process.wait()
     finally:
-        # Always ensure the adapter is restored to managed mode before exiting
         disable_monitor_mode()
         
-        # Ensure capture file is owned by standard user if created by root
         try:
             uid = int(subprocess.getoutput(f"id -u {ACTUAL_USER}"))
             gid = int(subprocess.getoutput(f"id -g {ACTUAL_USER}"))
