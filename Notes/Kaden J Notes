@@ -6,3 +6,4 @@ Notes for Kaden Jain
 
 09/28/2026
 - Working on monitor mode switch script, will upload test version under project folder
+- Ok so apparently my wlwifi driver fails to capture packets when the primary managed interface is directly switched to monitor mode because it requires a SECONDARY virtual interface to function properly. Swithcing that up might work. Try for next time. 
