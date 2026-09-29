@@ -4,6 +4,11 @@ Notes for Kaden Jain
 - Work on basic proof of concept visual
 - Added page for notes/articles/resources
 
-09/28/2026
+09/28/2026 - Working with monitorModeSwitch.py
 - Working on monitor mode switch script, will upload test version under project folder
 - Ok so apparently my wlwifi driver fails to capture packets when the primary managed interface is directly switched to monitor mode because it requires a SECONDARY virtual interface to function properly. Swithcing that up might work. Try for next time. 
+- UPDATE: My Intel iwlwifi driver fails to capture packets when the primary managed interface is directly switched to monitor mode. This means to get it working, it requires a secondary virtual interface. Replacing the manual iw commands and using airmon-ng will automatically create a dedicated virtual interface (wlan0mon) compatible with the Intel driver. This fixes issues with not having data show up in monitor mode. This will likely need to be changed (along with the BASE_INTERFACE variable when using different adapters.
+- I also included a note in a comment at the top of the script about a common error I get when running the script. 
+- monotorModeSwitch.py dependencies:
+  - Run the following in a terminal to view the package details and installation status for all the required tools on Kali Linux: apt show aircrack-ng rfkill iw iproute2 wireshark
+  - Verify that all of these executables are currently installed and ready to be used by the script with: which airmon-ng rfkill iw ip wireshark
