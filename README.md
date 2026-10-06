@@ -2,11 +2,11 @@
 D.A.R.T Capstone Project - University of Cincinnati Graduating Class Spring 2027
 
 ## The Team
-Sage Reiman
-Kaden Jain 
-Kyle Rosa 
-Jalen Tucker 
-Calista Werner
+**Sage Reiman** - _BS Cybersecurity_<br/>
+**Kaden Jain** - _BS Cybersecurity and Networking_<br/>
+**Kyle Rosa** - _BS Cybersecurity and Software App Development_<br/>
+**Jalen Tucker** - _BS Cybersecurity_<br/>
+**Calista Werner** - _BS Cybersecurity, MS Information Technology, Grad Cert Data Driven Cybersecurity_
 
 ## Project Summary
 The purpose of this project aims to address the security threats posed by commercial drones entering restricted airspaces and private property. Current kinetic or jamming countermeasures often result in unpredictable drone behavior or collateral damage. This project  develops a non-destructive takeover framework that leverages targeting protocol vulnerabilities in commercial Wi-Fi-based control links.  
