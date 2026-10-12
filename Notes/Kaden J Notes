@@ -12,3 +12,6 @@ Notes for Kaden Jain
 - monotorModeSwitch.py dependencies:
   - Run the following in a terminal to view the package details and installation status for all the required tools on Kali Linux: apt show aircrack-ng rfkill iw iproute2 wireshark
   - Verify that all of these executables are currently installed and ready to be used by the script with: which airmon-ng rfkill iw ip wireshark
+
+10/12/2026
+- Downloaded APKs for WifiUAV and SNAPTAIN FPV apps for reverse-engineering. Uploaded both to sharepoint as .zip files. 
