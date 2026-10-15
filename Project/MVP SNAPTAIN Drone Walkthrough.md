@@ -146,7 +146,7 @@ hping2: Sends custom TCP, UDP, ICMP, and raw IP packets with control over nearly
 
 
 
-\#sudo hping2 -c 1500 -d 120 -S -w 64 -p 9999 --flood --rand-source 172.19.10.1
+\#sudo hping2 -c 1500 -d 120 -S -w 64 -p 8866 --flood --rand-source 172.19.10.1
 
 \-c 1500 — send 1500 packets
 
@@ -156,7 +156,7 @@ hping2: Sends custom TCP, UDP, ICMP, and raw IP packets with control over nearly
 
 \-w 64 — set TCP window size to 64
 
-\-p 9999 — target port 9999
+\-p 8866 — target port 8866
 
 \--flood — send packets as fast as possible, not waiting for replies and suppressing reply info — this is what turns a test into a flood
 
