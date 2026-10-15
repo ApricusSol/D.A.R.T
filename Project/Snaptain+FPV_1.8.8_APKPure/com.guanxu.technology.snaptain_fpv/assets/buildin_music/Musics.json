@@ -1,0 +1,42 @@
+﻿[
+    {
+        "name": "Beat Thee",
+        "filename": "01.mp3",
+        "lrcname": "",
+        "singer": "",
+        "singerIcon": "01.jpg",
+        "icon": "01.jpg"
+    },
+    {
+        "name": "Spring Chicken",
+        "filename": "02.mp3",
+        "lrcname": "",
+        "singer": "",
+        "singerIcon": "02.jpg",
+        "icon": "02.jpg"
+    },
+    {
+        "name": "Study and Relax",
+        "filename": "03.mp3",
+        "lrcname": "",
+        "singer": "",
+        "singerIcon": "03.jpg",
+        "icon": "03.jpg"
+    },
+    {
+        "name": "The Celebrated Minuet",
+        "filename": "04.mp3",
+        "lrcname": "",
+        "singer": "",
+        "singerIcon": "04.jpg",
+        "icon": "04.jpg"
+    },
+    {
+        "name": "Wakka Wakka",
+        "filename": "05.mp3",
+        "lrcname": "",
+        "singer": "",
+        "singerIcon": "05.png",
+        "icon": "05.jpg"
+    }
+]

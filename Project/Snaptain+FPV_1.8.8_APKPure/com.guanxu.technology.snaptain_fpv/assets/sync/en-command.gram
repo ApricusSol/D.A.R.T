@@ -1,0 +1,15 @@
+#JSGF V1.0;
+
+grammar command;
+
+public <item> = TAKEOFF |
+LAND |
+RISE |
+FALLING |
+FORWARD |
+BACKWARD |
+TOLEFTSIDE |
+TORIGHTSIDE |
+SHOOT |
+VIDEO |
+NOVIDEO;
