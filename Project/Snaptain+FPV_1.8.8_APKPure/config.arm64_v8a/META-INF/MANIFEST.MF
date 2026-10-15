@@ -1,0 +1,71 @@
+Manifest-Version: 1.0
+
+Name: AndroidManifest.xml
+SHA1-Digest: suJMVK6NRiTodVlOpr6ZOl7+C+8=
+
+Name: lib/arm64-v8a/libBasicUsageEnvironment.so
+SHA1-Digest: JVZ3UNHp5rF5oKSBnQiL/mwPBoY=
+
+Name: lib/arm64-v8a/libEyeViewJni.so
+SHA1-Digest: ZeAp797ijvqxgwlaQXj3h/SvN4A=
+
+Name: lib/arm64-v8a/libFHDEV_Discover.so
+SHA1-Digest: aKbYhwZmm4cDwKvHqTZ2in1/IXM=
+
+Name: lib/arm64-v8a/libFHDEV_Net.so
+SHA1-Digest: 89UvYLmaZcOcySnF8lZgK70crhE=
+
+Name: lib/arm64-v8a/libFHExtraJni.so
+SHA1-Digest: lXJkdsWzT1uhNeYAKyQw/3iEXcw=
+
+Name: lib/arm64-v8a/libUsageEnvironment.so
+SHA1-Digest: BLgqv8BCRPohe81OOBLMfe05ZMg=
+
+Name: lib/arm64-v8a/libgroupsock.so
+SHA1-Digest: Y079qIvntQh/CsrfqxWT2qB50yA=
+
+Name: lib/arm64-v8a/libijkffmpeg_gx.so
+SHA1-Digest: BHuFlF/uzCtR0FH7kR2LFCLRH78=
+
+Name: lib/arm64-v8a/libijkplayer_gx.so
+SHA1-Digest: TwwogTD+VUoXQJgxPF6PmmITaOY=
+
+Name: lib/arm64-v8a/libijksdl_gx.so
+SHA1-Digest: yODFYp8h8sV8m3AFU6UuGl8q9Yk=
+
+Name: lib/arm64-v8a/libjniPdfium.so
+SHA1-Digest: Qwe5G28usWpr/T1wxHBsLdnCNsw=
+
+Name: lib/arm64-v8a/libjnidispatch.so
+SHA1-Digest: Hke29UhjWGhyjGcPB9WMZcXJhyg=
+
+Name: lib/arm64-v8a/liblive555-native-lib.so
+SHA1-Digest: pAYYk0HoHA6XSW/SwIucPY0j5W0=
+
+Name: lib/arm64-v8a/libliveMedia.so
+SHA1-Digest: kBJJcRQjdfYR9C59aCHFEEBctRg=
+
+Name: lib/arm64-v8a/libmodft2.so
+SHA1-Digest: 3HHekMJs1LJsonx/43yJ38vXQEs=
+
+Name: lib/arm64-v8a/libmodpdfium.so
+SHA1-Digest: vtVK8pZh6I5mxSW+IsldS7E88GY=
+
+Name: lib/arm64-v8a/libmodpng.so
+SHA1-Digest: t96I+DOI1pYkuYqk13E9z+/YY2E=
+
+Name: lib/arm64-v8a/libopencv_api.so
+SHA1-Digest: TZA3WsCG52Fp7zLlu5kWOTDr4uM=
+
+Name: lib/arm64-v8a/libopencv_java3.so
+SHA1-Digest: ZUSJ5JAJGJxOFlHn5soHtrKPKHE=
+
+Name: lib/arm64-v8a/libpocketsphinx_jni.so
+SHA1-Digest: 7xA3Lw4awLDQA7Trp2PALY8neCc=
+
+Name: lib/arm64-v8a/libyuv-decoder.so
+SHA1-Digest: I0rshOoEWQCCySyPttqG66CBBlY=
+
+Name: stamp-cert-sha256
+SHA1-Digest: 5vTkm69vqAbusD/fho7oWwc7j+I=
+

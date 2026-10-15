@@ -1,0 +1,74 @@
+Signature-Version: 1.0
+Created-By: 1.0 (Android)
+SHA1-Digest-Manifest: GAMfYp0x+QBpQJCcWAdwsuzVoak=
+X-Android-APK-Signed: 2, 3
+
+Name: AndroidManifest.xml
+SHA1-Digest: nX/Xl/L/QJex/rx+/lEbDprOMjs=
+
+Name: lib/arm64-v8a/libBasicUsageEnvironment.so
+SHA1-Digest: kdqCwWhxuSnkL2kQ0YmMPikJkMA=
+
+Name: lib/arm64-v8a/libEyeViewJni.so
+SHA1-Digest: PLroHpsKcSrsZEkYcENPs7rQ1H0=
+
+Name: lib/arm64-v8a/libFHDEV_Discover.so
+SHA1-Digest: OvuXMqlfrJlghM46ZFg3Eq30CxI=
+
+Name: lib/arm64-v8a/libFHDEV_Net.so
+SHA1-Digest: z95DKkPyBXa3Q9VqhdrCfSuNZLI=
+
+Name: lib/arm64-v8a/libFHExtraJni.so
+SHA1-Digest: E31EfNOZxD1YKdeLtpZMF0oMyws=
+
+Name: lib/arm64-v8a/libUsageEnvironment.so
+SHA1-Digest: hJtREyP3nIrVTA8wOiFfS5qO4WU=
+
+Name: lib/arm64-v8a/libgroupsock.so
+SHA1-Digest: LL9syEN4OiyJLSUYjNDsIfnKO8c=
+
+Name: lib/arm64-v8a/libijkffmpeg_gx.so
+SHA1-Digest: 96FvhRgdLWI4unrp9jutUP1EE64=
+
+Name: lib/arm64-v8a/libijkplayer_gx.so
+SHA1-Digest: scVJRNhRK6iTFV1y5azrqw7tDxI=
+
+Name: lib/arm64-v8a/libijksdl_gx.so
+SHA1-Digest: TcgZsKxMU22XIOi4N/gk+YSijQo=
+
+Name: lib/arm64-v8a/libjniPdfium.so
+SHA1-Digest: TxbcHlZCuHMI7MlQvWcp6xaW81k=
+
+Name: lib/arm64-v8a/libjnidispatch.so
+SHA1-Digest: 8SHh71EJbEE41AZ5bHa+kyc/gA8=
+
+Name: lib/arm64-v8a/liblive555-native-lib.so
+SHA1-Digest: FVBO81U/VStpmPBsNA8bmUedXBw=
+
+Name: lib/arm64-v8a/libliveMedia.so
+SHA1-Digest: wka8+F4Paoe4R3RoZ6jLH5CQD44=
+
+Name: lib/arm64-v8a/libmodft2.so
+SHA1-Digest: hnvWVXJlXPxyTwh0KtOKfr4v7vs=
+
+Name: lib/arm64-v8a/libmodpdfium.so
+SHA1-Digest: idFMV8pwVi5pY8ASTlsVl/qt/8k=
+
+Name: lib/arm64-v8a/libmodpng.so
+SHA1-Digest: CDzrsdnz681i22C4muV/AxLLOkM=
+
+Name: lib/arm64-v8a/libopencv_api.so
+SHA1-Digest: jgdmtg18MbEirO5mtlca/bfQHO4=
+
+Name: lib/arm64-v8a/libopencv_java3.so
+SHA1-Digest: oQNGnyO9YCffrltOcM6Ja3DYz8Y=
+
+Name: lib/arm64-v8a/libpocketsphinx_jni.so
+SHA1-Digest: IauokJydYrWH01P0zX5ojv8v8dc=
+
+Name: lib/arm64-v8a/libyuv-decoder.so
+SHA1-Digest: 5ccOoJs8qbsTtiIBIDd3aL7W7Jw=
+
+Name: stamp-cert-sha256
+SHA1-Digest: Bs40BvDZ1xrbgQrPTD2x5w/NfHQ=
+
