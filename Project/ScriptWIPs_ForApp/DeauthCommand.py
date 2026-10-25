@@ -5,7 +5,7 @@ from RunCommand import run_command
 
 
 """ 
-# define de-auth command function
+define de-auth command function
 
 def deauth_command():
         run_command(f"aireplay-ng -0 10 -a XX:XX:XX:XX:XX:XX wlan0mon")
