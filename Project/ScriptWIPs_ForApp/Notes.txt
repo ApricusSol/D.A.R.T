@@ -1,0 +1,20 @@
+A list of things needed in the app, with * meaning MVP releated
+
+- Command area: *
+- DDOS comand *
+     -port numbers
+- Deauth command *
+- MITM command *
+- Steal Video command *
+- Spot for captured Video: *
+
+- Wireshark display (Integrate monitorModeSwitch,py script for live Wireshark feed?)
+- Display of live commands from drone: 
+- Encryption attack
+- Map and Tracking
+
+
+Scripts Kaden can work on - 
+- Deauth command *
+- MITM command *
+- Steal Video command *
