@@ -292,7 +292,7 @@ This is the exact wire encoding of the `LPFHNP_Preview_t_struct` visible in the 
 
 ## 7. End-to-End Extraction & Live Streaming
 
-With the full protocol understood, three tools were built to turn this into an actual working video feed, no OEM app involved at any point.
+With the full protocol understood, this was turned into an actual working video feed, no OEM app involved at any point. (Built initially as three separate scripts while working through each piece; consolidated afterward into one tool — `s5c_video.py`, Section 8 — once all three were individually verified.)
 
 ### 7.1 Header Stripping (`extract_h264.py`)
 
@@ -320,11 +320,24 @@ Combines the connection/login logic from 7.2 with the header-stripping logic fro
 
 ## 8. Tools/Artifacts Produced
 
-- **`s5c_video_extractor.py`** — original script: TCP connect, AES-128-ECB login packet construction/sending, initial H.264 frame extraction logic. Superseded by the tools below once the video-channel/login mechanism was understood.
-- **`find_startplay_packet.py`** — captures-to-table tool: maps every TCP stream in a pcap, identifies which one(s) carry login vs. video traffic, parses and auto-decrypts envelope packets by command type, and diffs login plaintexts against each other. Used to find the actual video-channel mechanism (Section 6).
-- **`open_video_channel.py`** — standalone one-shot capture tool: opens the dedicated video connection, sends the reconstructed login packet, dumps the raw stream to a file.
-- **`extract_h264.py`** — post-processing tool: strips the 44-byte wrapper header from a raw dump, with `--debug-nals` and `--start-at-keyframe` diagnostic/recovery flags, producing a playable `.h264` file.
-- **`live_stream.py`** — the finished pipeline: connects, authenticates, and streams live video straight into `ffplay`, no file round-trip required.
+**Current tool:**
+
+- **`s5c_video.py`** — the consolidated, maintained tool. One script, three subcommands, sharing a single tested implementation of login-packet construction and frame-boundary detection instead of three separate copies of the same logic:
+  - `live` — connects, authenticates on the dedicated video channel, and pipes the live feed straight into `ffplay` in real time (optionally also saving a raw copy with `--tee`). This is the normal way to just watch the feed.
+  - `capture` — same connection/login, but dumps the raw stream to a file for a fixed duration instead of displaying it.
+  - `extract` — post-processes a raw file from `capture` (or `live --tee`) into a plain, playable `.h264` file, with `--debug-nals` and `--start-at-keyframe` diagnostic/recovery flags for when something looks wrong.
+
+  ```bash
+  python3 s5c_video.py live --host 172.19.10.1 --port 8866
+  python3 s5c_video.py capture --host 172.19.10.1 --port 8866 --out raw.bin --duration 10
+  python3 s5c_video.py extract --in raw.bin --out out.h264 --debug-nals 5
+  ```
+
+**Superseded (kept for reference/history only):**
+
+- `s5c_video_extractor.py` — original script: TCP connect, AES-128-ECB login packet construction/sending, initial H.264 frame extraction logic, from before the video-channel/login mechanism was understood.
+- `find_startplay_packet.py` — captures-to-table research tool: maps every TCP stream in a pcap, identifies which one(s) carry login vs. video traffic, parses and auto-decrypts envelope packets by command type, and diffs login plaintexts against each other. This is what actually found the video-channel mechanism (Section 6) — not superseded in purpose, just a one-off research tool rather than something you'd run day-to-day, so it isn't folded into `s5c_video.py`.
+- `open_video_channel.py`, `extract_h264.py`, `live_stream.py` — the three intermediate scripts, each individually built and verified while figuring this out, now merged into `s5c_video.py` above. Their logic was ported over and re-validated (not rewritten from scratch) before being retired.
 
 ---
 
@@ -335,4 +348,4 @@ Everything required to view the live feed is done. A few loose ends remain if th
 1. **Quality/encoder byte confirmation.** Only `btEncID=2` has been captured. Diff a session captured with a different in-app quality setting against the recovered layout (Section 6.4) to confirm which byte(s) actually control it, and what the trailing `0x0e` field means.
 2. **UDP transport path.** The Java (`FHDevices.setParams`) checks for a `"udp"` transport mode (`rxtxTransMode`) that was never exercised here — everything so far has used the TCP path. Unexplored, not needed for current goal.
 3. **Heartbeat behavior on the video channel.** The control channel showed periodic heartbeat-shaped traffic; unclear whether the video channel needs anything similar for long-running sessions beyond the test durations used here (up to ~15s tested cleanly).
-4. **Merge into one tool.** `open_video_channel.py` and `extract_h264.py` are now largely superseded by `live_stream.py` for the live-view use case, but could still be merged/cleaned up into a single polished script if this is going to be maintained longer-term.
+4. ~~**Merge into one tool.**~~ Done — see `s5c_video.py` (Section 8).
