@@ -131,7 +131,7 @@ sudo airmon-ng check kill
 sudo airmon-ng start wlan1
 iwconfig                                  # confirm the monitor interface name (e.g. wlan1mon)
 sudo iwconfig wlan1mon channel <channel>  # match the drone's channel
-sudo tcpdump -i wlan1mon -w capture.pcap
+sudo airodump-ng wlan1mon --bssid 14:95:69:E9:48:C6 -c 2 -w test_capture
 ```
 
 The drone's AP is **open (no WPA2)**, so no decryption keys were needed in Wireshark — IP/TCP headers were visible directly.
