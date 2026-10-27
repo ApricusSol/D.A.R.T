@@ -53,7 +53,7 @@ Change `wlan0` to whichever adapter you're using (mine was `wlan1`). You'll prob
 
 To stop monitor mode:
 ```
-# airmon-ng stop wlan0mon
+# airmon-ng stop wlan1mon
 # systemctl restart NetworkManager
 ```
 
