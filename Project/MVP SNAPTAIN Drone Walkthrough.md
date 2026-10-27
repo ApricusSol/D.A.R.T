@@ -121,7 +121,7 @@ Two capture setups, depending on whose traffic we needed to see:
 
 **Setup A — capturing our own machine's traffic.** When our Kali box was itself one of the endpoints (e.g. testing our own Python script against the drone), a normal association + standard interface capture was enough:
 ```bash
-sudo tcpdump -i wlan0 -w capture.pcap
+sudo airodump-ng wlan1mon --bssid 14:95:69:E9:48:C6 -c 2 -w test_capture
 ```
 No monitor mode needed — traffic to/from your own machine is visible to a normal capture.
 
