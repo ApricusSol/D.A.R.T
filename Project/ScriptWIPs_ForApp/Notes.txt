@@ -1,0 +1,37 @@
+A list of things needed in the app, with * meaning MVP releated
+
+- Command area: *
+- DDOS comand *
+     -port numbers
+- Deauth command *
+- MITM command *
+- Steal Video command *
+- Spot for captured Video: *
+
+- Wireshark display (Integrate monitorModeSwitch,py script for live Wireshark feed?)
+- Display of live commands from drone: 
+- Encryption attack
+- Map and Tracking
+
+
+Scripts Kaden can work on - 
+- Deauth command *
+- MITM command *
+- Steal Video command *
+
+
+
+Next steps - 
+
+- Script that when ran will start monitor mode (MonitorBssidSwitch is for finding the BSSID. I want one that the Monitor BSSID traffic can call on already to have it started and will turn it off when the script is ended. Will be better for gneral use, or can have it be a button to activate monitor mode prior to running the other tools. Like a switch that brings it up once you give it the desured network interface, then unliocks the other script options)
+
+
+
+
+
+
+Why python for all of this?
+- Lots of libraries $ built in data handling (dynamic timestamps, file path construction, logging are all handled by native libraries)
+- Native modules manage mixed-privilege execution, checking os.geteuid() to enforce root access for network commands while using environment variables to launch Wireshark can be done as a standard user
+- Simpler modular upgrades like argparse for passing in interface names, channels, or capture files directly into the command line
+- subprocess module provides control over background applications
