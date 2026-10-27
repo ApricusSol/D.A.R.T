@@ -1,0 +1,45 @@
+A list of things needed in the app (* = MVP related)
+
+
+MVP Features -
+    - Command area *
+    - DDOS command *
+        - port numbers
+    - Deauth command *
+    - MITM command *
+    - Steal Video command *
+    - Spot for captured Video *
+
+
+App To-Do / Future Implements -
+    - Wireshark display (integrate monitorModeSwitch.py for live Wireshark feed?)
+    - Display of live commands from drone
+    - Encryption attack
+    - Map and Tracking
+    - GUI switch/button with fields for wlan/network adapter to activate/deactivate MonitorModeManager
+
+
+Scripts Kaden Can Work On -
+    - Deauth command *
+    - MITM command *
+
+
+Done -
+    - Sage did Steal Video command (and Spot for Captured Video?)
+    - MonitorModeManager.py — standalone script that starts/stops monitor mode with a lock file gate (v2)
+    - config.py — shared constants (INTERFACE, MON_INTERFACE, MM_LOCK_FILE, OUTPUT_DIR)
+    - Refactored MonitorBssidSwitch.py — removed duplicate MM code, checks lock file before running
+    - Refactored MonitorBssidTrack.py — removed duplicate MM code, checks lock file, fixed f-string bug
+    - Fixed airodump-ng calls so interactive output is no longer suppressed
+
+
+Next Steps -
+    - GUI toggle in the app for MonitorModeManager (fields: wlan adapter name)
+    - Integrate MonitorModeManager workflow into the app's command area
+
+
+Why Python For All of This? -
+    - Lots of libraries & built-in data handling (dynamic timestamps, file path construction, logging are all handled by native libraries)
+    - Native modules manage mixed-privilege execution, checking os.geteuid() to enforce root access for network commands while using environment variables to launch Wireshark as a standard user
+    - Simpler modular upgrades like argparse for passing in interface names, channels, or capture files directly into the command line
+    - subprocess module provides control over background applications
