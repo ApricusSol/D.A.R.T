@@ -1,81 +1,77 @@
-""" 
-Script to capture wifi packets from a specific AP and save them to a file. 
+"""
+Script to capture WiFi packets from a specific access point and save them to a file.
 
-Note - Monitor mode must already be enabled and you must already have a BSSID you want to track from Monitor Mode BSSID Switch
+Requires monitor mode to already be running via MonitorModeManager.py.
+Uses the interface defined in config.py.
+
+Usage:
+    1. Start monitor mode:  sudo python MonitorModeManager.py
+    2. Find your BSSID:     sudo python MonitorBssidSwitch.py
+    3. Track the target:    sudo python MonitorBssidTrack.py <channel> <BSSID>
+
+Example:
+    sudo python MonitorBssidTrack.py 11 00:11:22:33:44:55
+    sudo python MonitorBssidTrack.py 11 00:11:22:33:44:55 --output /home/kali/Desktop/capture
+
+airodump-ng flags used:
+    -c <channel>                Lock adapter to a specific Wi-Fi channel
+    --bssid XX:XX:XX:XX:XX:XX   Filter capture to one access point
+    -w <path>                   File path/prefix for saved capture files (.cap, .csv, etc.)
 """
 
 import argparse
 import os
 import sys
-import atexit
+import subprocess
 
-#import run command function
-from RunCommand import run_command
-
-"""
-airodump-ng: The packet sniffing tool.
-
--c <channel>: Locks the wireless adapter to listen on a specific Wi-Fi channel.
-
---bssid XX:XX:XX:XX:XX:XX: Filters the capture to only include traffic associated with this specific MAC address.
-
--w {OUTPUT_DIR}: Sets the file path and prefix where the capture files (.cap, .csv, etc.) will be saved.
-
-{INTERFACE}mon: The wireless network interface being used to capture the traffic.
+from config import MON_INTERFACE, MM_LOCK_FILE, OUTPUT_DIR
 
 
-ARGS NEEDED -
+def check_monitor_mode():
+    """Verify that monitor mode is active by checking for the lock file."""
+    if not os.path.exists(MM_LOCK_FILE):
+        print("[!] Monitor mode is not active.")
+        print("    Start it first:  sudo python MonitorModeManager.py")
+        sys.exit(1)
+    print(f"[+] Monitor mode confirmed active on {MON_INTERFACE}")
 
-<channel>: The specific Wi-Fi channel number of the target network (e.g., 1, 6, 11).
-
-XX:XX:XX:XX:XX:XX: The MAC address (BSSID) of the target router or access point.
-
-{OUTPUT_DIR}: The directory path and base filename for the saved files (e.g., /home/user/Desktop/capture).
-
-{INTERFACE}mon: The name of their wireless adapter that has been put into monitor mode (e.g., wlan0mon or wlan1mon).
-
-"""
-
-def on_exit():
-    run_command("airmon-ng stop {INTERFACE}mon")
-    run_command("systemctl restart NetworkManager")
 
 def main():
-    # Make argument parser with description
-    parser = argparse.ArgumentParser(description="Taking in required information to run the BSSID tracking command")
+    parser = argparse.ArgumentParser(
+        description="Capture packets from a specific BSSID while monitor mode is active."
+    )
 
-    # Add a positional argument for number of de-auth packets
-    parser.add_argument("channel", help="The Wi-Fi channel number of the target network. Ex - 1, 6, 11")
+    parser.add_argument("channel",
+        help="The Wi-Fi channel of the target network (e.g., 1, 6, 11)")
 
-    # Add a positional argument for the networks BSSID
-    parser.add_argument("BSSID", help="The target networks BSSID/MAC address. Ex- XX:XX:XX:XX:XX:XX")
+    parser.add_argument("BSSID",
+        help="The target network's BSSID/MAC address (e.g., AA:BB:CC:DD:EE:FF)")
 
-    # Add a positional argument (for MM network being used)
-    parser.add_argument("network", help="The Network currently running monitor mode. Ex-wlan0mon")
+    parser.add_argument("--output", "-o",
+        default=OUTPUT_DIR,
+        help=f"Output directory/prefix for capture files (default: {OUTPUT_DIR})")
 
-    # Add a positional argument for the output dir for logging
-    parser.add_argument("outputDir", help="The directory path and base filename for the saved files. Ex - /home/user/Desktop/capture")
-
-
-    # Parse the arguments
     args = parser.parse_args()
 
-    print(f"BSSID: {args.BSSID}")
-    print(f"Channel: {args.channel}")
-    print(f"Network: {args.network}")
-    print(f"Output Directory: {args.outputDir}")
-       
-    # "airodump-ng -c <channel> --bssid XX:XX:XX:XX:XX:XX -w {OUTPUT_DIR} {INTERFACE}mon")
-    # build the command
-    run_command(f"airodump-ng -c {args.channel} --bssid {args.BSSID} -w {args.outputDir} {args.network}")
+    check_monitor_mode()
 
-    """ 
-    Example command format for running: 
-    python MonitorBssidTrack.py 11 00:11:22:33:44:55 wlan0mon /home/kali/Desktop/capture
-    """
+    print(f"[*] Tracking BSSID: {args.BSSID}")
+    print(f"    Channel:   {args.channel}")
+    print(f"    Interface: {MON_INTERFACE}")
+    print(f"    Output:    {args.output}")
+    print()
 
-   
+    # airodump-ng is interactive — run without suppressing output
+    subprocess.run(
+        f"airodump-ng -c {args.channel} --bssid {args.BSSID} -w {args.output} {MON_INTERFACE}",
+        shell=True,
+        check=False
+    )
+
+
 if __name__ == "__main__":
     if os.geteuid() != 0:
         sys.exit("Error: This script must be run as sudo.")
+    main()
+
     main()
