@@ -15,3 +15,28 @@ Notes for Kaden Jain
 
 10/12/2026
 - Downloaded APKs for WifiUAV and SNAPTAIN FPV apps for reverse-engineering. Uploaded both to sharepoint as .zip files. 
+
+
+10/29/2026
+- Previously Done - 
+  - Wrote a Monitor mode switch script to automate the setup of packet sniffing.
+  	- Includes logging and .pcap output file saving, can be used to help develop future scripts
+  	- Can be implemented with other scripts into an control interface/dashboard
+
+- Kaden Project Update as of 10/29 -
+  - Refined details on my testing environment
+  	- Software/patches up to date
+  	- Purchased and am now using the same network adapter that Sage has been using for consistency
+  	- exploring and using new python packages for efficiency in my code
+  - Script Changes / Automation Updates
+  	- Edited monitor mode switch and subprocess scrips to align with the updated walkthrough by Sage using the SNAPTAIN drone
+  	- Created a master config.py file that stores constant data used across all scripts 
+  		- Monitor mode master switch script, for toggling on-and-off the ability to monitor and modify wireless traffic
+  		- BSSID Switch - to scan for nearby WiFi networks and display their BSSIDs for drone ID-ing
+  		- BSSID Track - to capture WiFi packets from a specific access point and save them to a file for forensic analysis and data retention
+  	- Trying to tailor scripts so that they're easier to implement in a GUI using buttons or toggle switches, with boxes for the data inputs from a user
+
+- To Do -
+  - DDOS & Deauth Script integration with the rest of the scripts using config.py
+  - Edit config.py so that it can ingest data from a user using the GUI
+  - Clean up the GitHub project folder, remove old clutter code
