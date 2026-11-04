@@ -49,4 +49,6 @@ Notes for Kaden Jain
   - Fixed stale docstring reference in MonitorBssidTrack.py (MonitorBssidSwitch.py -> MonitorBssidFind.py)
 
 - To Do -
-  - Edit config.py so that it can ingest data from a user
+  - Edit config.py so that it can ingest data from a user (from GUI preferrably)
+  - Script to ID drones based on last few digits of NIC
+  - Wait for the gui to be made and then integrate scripts into that
