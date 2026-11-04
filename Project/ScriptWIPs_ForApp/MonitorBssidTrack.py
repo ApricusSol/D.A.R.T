@@ -6,7 +6,7 @@ Uses the interface defined in config.py.
 
 Usage:
     1. Start monitor mode:  sudo python MonitorModeManager.py
-    2. Find your BSSID:     sudo python MonitorBssidSwitch.py
+    2. Find your BSSID:     sudo python MonitorBssidFind.py
     3. Track the target:    sudo python MonitorBssidTrack.py <channel> <BSSID>
 
 Example:
@@ -72,6 +72,4 @@ def main():
 if __name__ == "__main__":
     if os.geteuid() != 0:
         sys.exit("Error: This script must be run as sudo.")
-    main()
-
     main()

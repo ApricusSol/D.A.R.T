@@ -6,7 +6,7 @@ Uses the interface defined in config.py.
 
 Usage:
     1. Start monitor mode:  sudo python MonitorModeManager.py
-    2. Run this script:     sudo python MonitorBssidSwitch.py
+    2. Run this script:     sudo python MonitorBssidFind.py
 """
 
 import os

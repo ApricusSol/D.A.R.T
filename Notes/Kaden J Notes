@@ -36,7 +36,17 @@ Notes for Kaden Jain
   		- BSSID Track - to capture WiFi packets from a specific access point and save them to a file for forensic analysis and data retention
   	- Trying to tailor scripts so that they're easier to implement in a GUI using buttons or toggle switches, with boxes for the data inputs from a user
 
+11/04/2026
+  - Cleaned up and integrated DeauthCommand.py and DdosCommand.py to match the MonitorBssid script pattern
+  	- Both now import MON_INTERFACE and MM_LOCK_FILE from config.py instead of requiring manual interface input
+  	- Both now include check_monitor_mode() lock file validation before running
+  	- Both now include sudo check guard in __main__
+  	- Both now use subprocess.run() directly so command output is visible (was suppressed by RunCommand)
+  	- Added proper module docstrings with workflow steps, usage examples, and flag references
+  	- Cleaned up argument names to use snake_case, added help text
+  - Added --client / -c optional flag to DeauthCommand.py for targeting a specific client MAC
+  - Fixed bug in MonitorBssidTrack.py where main() was called twice (duplicate call at end of file)
+  - Fixed stale docstring reference in MonitorBssidTrack.py (MonitorBssidSwitch.py -> MonitorBssidFind.py)
+
 - To Do -
-  - DDOS & Deauth Script integration with the rest of the scripts using config.py
-  - Edit config.py so that it can ingest data from a user using the GUI
-  - Clean up the GitHub project folder, remove old clutter code
+  - Edit config.py so that it can ingest data from a user
