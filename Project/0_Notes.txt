@@ -20,17 +20,17 @@ App To-Do / Future Implements -
 
 
 Scripts Kaden Can Work On -
-    - Deauth command *
     - MITM command *
+    - IDing drones by known NICs
 
 
 Done -
-    - Sage did Steal Video command (and Spot for Captured Video?)
     - MonitorModeManager.py — standalone script that starts/stops monitor mode with a lock file gate (v2)
     - config.py — shared constants (INTERFACE, MON_INTERFACE, MM_LOCK_FILE, OUTPUT_DIR)
     - Refactored MonitorBssidSwitch.py — removed duplicate MM code, checks lock file before running
     - Refactored MonitorBssidTrack.py — removed duplicate MM code, checks lock file, fixed f-string bug
     - Fixed airodump-ng calls so interactive output is no longer suppressed
+    - Sage did Steal Video command (and Spot for Captured Video?)
 
 
 Next Steps -
