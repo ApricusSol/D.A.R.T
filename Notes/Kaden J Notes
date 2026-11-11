@@ -48,10 +48,17 @@ Notes for Kaden Jain
   - Fixed bug in MonitorBssidTrack.py where main() was called twice (duplicate call at end of file)
   - Fixed stale docstring reference in MonitorBssidTrack.py (MonitorBssidSwitch.py -> MonitorBssidFind.py)
 
+11/11/2026
+	- Completed DownloadOuiList.py to download the Wireshark manufacturer database
+	- Completed DroneNicList.py to extract drone-related manufacturer MAC prefixes from manuf.txt
+	- Added README_Instructions.md with setup and usage instructions for the scripts
+	- The OUI lookup identifies possible drone-manufacturer prefixes; it does not identify an individual drone
+
 - To Do -
-  - Edit config.py so that it can ingest data from a user (from GUI preferrably)
-  - Script to ID drones based on last few digits of NIC
-  - Wait for the gui to be made and then integrate scripts into that
+	- Integrate DroneNicList.load_drone_ouis() with network scanning so matching BSSIDs can be flagged as possible drone-related devices
+	- Validate the OUI lookup against Snaptain test captures and document its limits; decide whether separate device-level identification using NIC suffixes is still needed
+	- Update config.py to accept user-provided settings, preferably through the GUI
+	- Integrate the scripts into the GUI when it is available
 
 For the drone IDing - look into this:
 - https://github.com/BluemarkInnovations/RemoteID-DroneScout-Bridge-Python
