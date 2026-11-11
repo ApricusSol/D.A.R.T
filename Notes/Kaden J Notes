@@ -52,3 +52,7 @@ Notes for Kaden Jain
   - Edit config.py so that it can ingest data from a user (from GUI preferrably)
   - Script to ID drones based on last few digits of NIC
   - Wait for the gui to be made and then integrate scripts into that
+
+For the drone IDing - look into this:
+- https://github.com/BluemarkInnovations/RemoteID-DroneScout-Bridge-Python
+- https://dronescout.co/bridge/
