@@ -27,6 +27,17 @@ Articles / Research
 Videos / Media
 - How to hack someones drone!? - https://youtu.be/7w1VaPqwL64?si=agcW0laU1zfUw5hN
 
+Similar Projects
+- Open-Source Network Analysis & Remote ID Frameworks
+  - RemoteIDReceiver (by cyber-defence-campus): A proof-of-concept web application with a modular Python backend and VueJS frontend designed to monitor drones. It relies on a compatible Wi-Fi adapter (such as an ALFA AWUS036ACM) operating in 802.11 monitor mode to capture, decode, log, and visually map drone broadcasts.
+  - Open Drone ID (Wireshark Dissector & Core-C Library): The primary open-source implementation for ASTM F3411 Remote ID. The project includes a dedicated Wireshark dissector plugin specifically built to parse captured Wi-Fi Beacon, Wi-Fi NAN, and Bluetooth 4 packets directly from an interface in monitor mode.
+  - Droneid-go / WarDragon: A high-performance receiver that unifies ASTM F3411 compliance, direct Wi-Fi monitor mode capture (replacing older Python-based receiver scripts), and DJI's proprietary DroneID (via an SDR) into a single Go binary that streams decoded telemetry over ZMQ.
+- Commercial Hardware Receivers (DroneScout Bridge Alternatives)
+  - Dronetag (RIDER & Scout): Hardware receivers built to capture Wi-Fi and Bluetooth Remote ID broadcasts and relay them to an interface. The RIDER is a pocket-sized, battery-powered portable module for field use, while the Scout Gen 2 is designed for fixed, 24/7 professional site monitoring.
+  - Thalrix Tripwire: A fixed external receiver that listens continuously for Wi-Fi and Bluetooth Remote ID. It is designed for the perimeter defense of private properties, airports, and campuses, logging the flight paths of detected UAVs.
+  - UAS Sentry Nexus Observer: A dedicated handheld touchscreen receiver featuring modular antennas to extend the baseline detection range of commercial UAVs in the field.
+- Mobile Scanners
+- AirSentinel & Drone Scanner (by Dronetag): Mobile applications that utilize a device's internal antennas to pick up and decode nearby Remote ID broadcasts for quick, on-the-go telemetry validation.
 
 Contacts
 - Partnership opportunity / tech-related feedback - innovation@cvgairport.com.- https://www.cvgairport.com/on-the-horizon/say-hello-to-cvg-ai-cvg-airport-innovation/
