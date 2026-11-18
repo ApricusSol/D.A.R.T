@@ -66,3 +66,8 @@ For the drone IDing - look into this:
 
 Wireshark manuf file
 - https://www.wireshark.org/download/automated/data/
+
+Other things of note on the why python side - 
+- Extensive Drone & Telemetry Libraries. Mature packages like MAVSDK-Python, DroneKit, and djitellopy let you connect to flight controllers and send movement or waypoint commands
+- Network & Radio Frequency (RF) Tooling. Libraries like Scapy and PySerial make it simple to craft raw packets, sniff Wi-Fi traffic, and communicate directly with USB RF dongles or Software-Defined Radios (SDRs)
+- Fast Prototyping & Iteration. Because Python is an interpreted language, you do not need to recompile firmware every time you tweak a flight path or adjust a packet payload. You can run scripts live from a terminal or a companion computer like a Raspberry Pi
